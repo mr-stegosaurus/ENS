@@ -1,27 +1,27 @@
-import Head from 'next/head';
-import styles from '@/styles/Home.module.css';
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
 import Web3Modal from "web3modal";
 import { ethers, providers } from "ethers";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-  //walletConnected keep track of whether the user's wallet is connected or not 
+  // walletConnected keep track of whether the user's wallet is connected or not
   const [walletConnected, setWalletConnected] = useState(false);
-  // create a reference to teh web3 modal
+  // Create a reference to the Web3 Modal (used for connecting to Metamask) which persists as long as the page is open
   const web3ModalRef = useRef();
-  // ens
+  // ENS
   const [ens, setENS] = useState("");
-  // save the address of the currently connected account
+  // Save the address of the currently connected account
   const [address, setAddress] = useState("");
 
   /**
-   * sets the ENS, if the current connected address has an associated ENS or else it sets
+   * Sets the ENS, if the current connected address has an associated ENS or else it sets
    * the address of the connected account
    */
   const setENSOrAddress = async (address, web3Provider) => {
-    //lookup the ENS related to the given address
+    // Lookup the ENS related to the given address
     var _ens = await web3Provider.lookupAddress(address);
-    // if the address has an ENS set the ENS or else just the address
+    // If the address has an ENS set the ENS or else just set the address
     if (_ens) {
       setENS(_ens);
     } else {
@@ -57,12 +57,12 @@ export default function Home() {
   };
 
   /*
-  * connectWallet: connects the metamask wallet
+    connectWallet: Connects the MetaMask wallet
   */
   const connectWallet = async () => {
     try {
-      // get the provider from web3modal
-      // when used for the first time, prompts the user to connect their wallet
+      // Get the provider from web3Modal, which in our case is MetaMask
+      // When used for the first time, it prompts the user to connect their wallet
       await getProviderOrSigner(true);
       setWalletConnected(true);
     } catch (err) {
@@ -70,13 +70,16 @@ export default function Home() {
     }
   };
 
+  /*
+    renderButton: Returns a button based on the state of the dapp
+  */
   const renderButton = () => {
     if (walletConnected) {
       <div>Wallet connected</div>;
     } else {
       return (
         <button onClick={connectWallet} className={styles.button}>
-          Connect Your Wallet
+          Connect your wallet
         </button>
       );
     }
